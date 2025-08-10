@@ -21,11 +21,16 @@ def read_profiles(tx):
 
 def add_specialization(tx, email, specialization):
    query = """
-      MERGE (s:Specialization {name: $specialization})
-      ON CREATE SET s.name = $specialization
-
       MATCH (d:Doctor {email: $email})
-      CREATE (d)-[:SPECIALIZED_IN]->(s)
-   
+      MERGE (s:Specialization {name: $specialization})
+      MERGE (d)-[:SPECIALIZED_IN]->(s)
    """
    tx.run(query, email=email, specialization=specialization)
+
+
+
+def new_specialization(tx, specialization):
+   query = """
+      CREATE (s:Specialization {name: $specialization})
+   """
+   tx.run(query, specialization=specialization)
